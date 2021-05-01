@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+
+const dotenv = require("dotenv");
+dotenv.config();
+
+const { Server, Probot } = require("probot");
+const githubHandlers = require("./github-handlers.js");
+const expressApp = require("./express-app.js")
+const server = new Server({
+  Probot: Probot.defaults({
+    appId: process.env.APP_ID,
+    privateKey: process.env.PRIVATE_KEY,
+    secret: process.env.WEBHOOK_SECRET,
+  }),
+});
+
+server.load(githubHandlers);
+server.expressApp.use(expressApp);
+server.start();
